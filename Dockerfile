@@ -37,7 +37,7 @@ RUN yum install -y centos-release-scl-rh && \
     yum-config-manager --enable centos-sclo-rh-testing && \
     INSTALL_PKGS="rh-python35 rh-python35-python-devel rh-python35-python-setuptools rh-python35-python-pip \
 	 nss_wrapper httpd24 httpd24-httpd-devel httpd24-mod_ssl httpd24-mod_auth_kerb httpd24-mod_ldap \
-         httpd24-mod_session atlas-devel gcc-gfortran libffi-devel libtool-ltdl enchant" && \
+         httpd24-mod_session atlas-devel gcc-gfortran libffi-devel libtool-ltdl enchant libxml2-devel xmlsec1-devel xmlsec1-openssl-devel libtool-ltdl-devel" && \
     yum install -y --setopt=tsflags=nodocs --enablerepo=centosplus $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     # Remove centos-logos (httpd dependency, ~20MB of graphics) to keep image
@@ -62,9 +62,10 @@ RUN source scl_source enable rh-python35 && \
     virtualenv /opt/app-root && \
     chown -R 1001:0 /opt/app-root && \
     fix-permissions /opt/app-root && \
-    rpm-file-permissions \
-    fix-permissions $STI_SCRIPTS_PATH \
-    echo "---> Installing dependencies ..." \
+    rpm-file-permissions && \
+    fix-permissions $STI_SCRIPTS_PATH && \
+    echo "---> Installing dependencies ..." && \
+    /opt/app-root/bin/pip install --upgrade pip && \
     /opt/app-root/bin/pip install -r /opt/app-root/src/requirements.txt
 
 USER 1001

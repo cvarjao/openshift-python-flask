@@ -25,6 +25,8 @@
         integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
         crossorigin="anonymous"></script>
 <div class="container-fluid">
+    <h1>{{ title}}</h1>
+    <hr/>
     <h2>Query String:</h2>
     <table class="table table-striped table-bordered">
         {% for k, v in request.args.items() %}
