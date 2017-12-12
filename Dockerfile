@@ -50,6 +50,7 @@ COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 
 # Copy extra files to the image.
 COPY ./root/ /
+COPY ./ /opt/app-root/src/
 
 # - Create a Python virtual environment for use by any application to avoid
 #   potential conflicts with Python packages preinstalled in the main Python
@@ -62,7 +63,9 @@ RUN source scl_source enable rh-python35 && \
     chown -R 1001:0 /opt/app-root && \
     fix-permissions /opt/app-root && \
     rpm-file-permissions \
-    fix-permissions $STI_SCRIPTS_PATH
+    fix-permissions $STI_SCRIPTS_PATH \
+    echo "---> Installing dependencies ..." \
+    /opt/app-root/bin/pip install -r /opt/app-root/src/requirements.txt
 
 USER 1001
 
