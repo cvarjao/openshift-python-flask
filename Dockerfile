@@ -61,7 +61,8 @@ RUN source scl_source enable rh-python35 && \
     virtualenv /opt/app-root && \
     chown -R 1001:0 /opt/app-root && \
     fix-permissions /opt/app-root && \
-    rpm-file-permissions
+    rpm-file-permissions \
+    fix-permissions $STI_SCRIPTS_PATH
 
 USER 1001
 
