@@ -1,8 +1,7 @@
 # This image provides a Python 3.5 environment you can use to run your Python
 # applications.
-#FROM rhscl/s2i-base-rhel7
-#FROM registry.access.redhat.com/rhscl/python-35-rhel7
-FROM rhscl/s2i-base-rhel7
+FROM centos/s2i-base-centos7
+
 EXPOSE 8080
 
 ENV PYTHON_VERSION=3.5 \
@@ -28,23 +27,22 @@ LABEL summary="$SUMMARY" \
       io.k8s.display-name="Python 3.5" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,python,python35,rh-python35" \
-      com.redhat.component="rh-python35-docker" \
-      name="rhscl/python-35-rhel7" \
+      com.redhat.component="python35-docker" \
+      name="centos/python-35-centos7" \
       version="3.5" \
-      release="1"
+      release="1" \
+      maintainer="SoftwareCollections.org <sclorg@redhat.com>"
 
-RUN yum install -y yum-utils && \
-    yum-config-manager --disable \* &> /dev/null && \
-    yum-config-manager --enable rhel-server-rhscl-7-rpms && \
-    yum-config-manager --enable rhel-7-server-rpms && \
-    yum-config-manager --enable rhel-7-server-optional-rpms && \
+RUN yum install -y centos-release-scl-rh && \
+    yum-config-manager --enable centos-sclo-rh-testing && \
     INSTALL_PKGS="rh-python35 rh-python35-python-devel rh-python35-python-setuptools rh-python35-python-pip \
-	nss_wrapper httpd24 httpd24-httpd-devel httpd24-mod_ssl httpd24-mod_auth_kerb httpd24-mod_ldap httpd24-mod_session \
-        atlas-devel gcc-gfortran libffi-devel libtool-ltdl enchant" && \
-    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+	 nss_wrapper httpd24 httpd24-httpd-devel httpd24-mod_ssl httpd24-mod_auth_kerb httpd24-mod_ldap \
+         httpd24-mod_session atlas-devel gcc-gfortran libffi-devel libtool-ltdl enchant" && \
+    yum install -y --setopt=tsflags=nodocs --enablerepo=centosplus $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
-    # Remove redhat-logos (httpd dependency) to keep image size smaller.
-    rpm -e --nodeps redhat-logos && \
+    # Remove centos-logos (httpd dependency, ~20MB of graphics) to keep image
+    # size smaller.
+    rpm -e --nodeps centos-logos && \
     yum clean all -y
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH.
